@@ -23,6 +23,22 @@ namespace NB_Mailer_Plakhtiy
         public MainWindow()
         {
             InitializeComponent();
+#if DEBUG
+            string debugOrRelease = "D E B U G";
+#else
+            string debugOrRelease = "R E L E A S E";
+#endif
+            MessageBoxResult mbr = MessageBox.Show(debugOrRelease + " !!! - version started." + Environment.NewLine +
+            Environment.NewLine + "Close App.?", "WARNING!", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            if (mbr == MessageBoxResult.Yes) Application.Current.Shutdown();
+
+            StartJob();
+        }
+
+
+        private void StartJob()
+        {
+            // throw new NotImplementedException();
         }
     }
 }

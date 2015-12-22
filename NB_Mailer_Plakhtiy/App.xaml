@@ -4,6 +4,5 @@
              xmlns:local="clr-namespace:NB_Mailer_Plakhtiy"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
     </Application.Resources>
 </Application>

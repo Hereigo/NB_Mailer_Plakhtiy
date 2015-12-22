@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NB_Mailer_Plakhtiy"
         mc:Ignorable="d"
-        Title="NBU-Mailer 2015 © Plakhtiy A.Net" Height="350" Width="525" Icon="Envelope2015.ico">
+        Title="NBU-Mailer 2015 © Plakhtiy A.Net" Height="350" Width="525" Icon="Envelope2015.ico" FontSize="14.667">
     <Grid>
         
     </Grid>
