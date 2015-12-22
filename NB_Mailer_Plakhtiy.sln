@@ -5,6 +5,8 @@ VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NB_Mailer_Plakhtiy", "NB_Mailer_Plakhtiy\NB_Mailer_Plakhtiy.csproj", "{805308D8-770E-4610-9A4C-0F3C772DFDF9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console_FOR_TESTS", "Console_FOR_TESTS\Console_FOR_TESTS.csproj", "{5BDD12F3-C952-4B7A-B625-7D28C45C82EC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{805308D8-770E-4610-9A4C-0F3C772DFDF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{805308D8-770E-4610-9A4C-0F3C772DFDF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{805308D8-770E-4610-9A4C-0F3C772DFDF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BDD12F3-C952-4B7A-B625-7D28C45C82EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BDD12F3-C952-4B7A-B625-7D28C45C82EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BDD12F3-C952-4B7A-B625-7D28C45C82EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BDD12F3-C952-4B7A-B625-7D28C45C82EC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
