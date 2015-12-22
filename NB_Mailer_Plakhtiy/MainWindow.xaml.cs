@@ -97,11 +97,10 @@ namespace NB_Mailer_Plakhtiy
         {
             try
             {
-
-                MessageBox.Show(rootDir);
-
-                // RUN TCPFOSS :
-
+#if !DEBUG
+                // RUN MAIL3.BAT & TCPFOSS :
+                Process.Start(rootDir + "\\MAIL3.BAT").WaitForExit();
+#endif
                 // IF OUTGOING FILES EXISTS - BKP & RENAME !
 
                 // RUN MAIL3.BAT :
@@ -118,8 +117,11 @@ namespace NB_Mailer_Plakhtiy
                 //          WRITE INTO DB :
                 //          REPORT ! :
 
-                // RUN MAIL3.BAT :
-                // RUN TCPFOSS :
+
+#if !DEBUG
+                // RUN MAIL3.BAT & TCPFOSS :
+                Process.Start(rootDir + "\\MAIL3.BAT").WaitForExit();
+#endif
             }
             catch (Exception exc)
             {
