@@ -7,6 +7,8 @@
         mc:Ignorable="d"
         Title="NBU-Mailer 2015 © Plakhtiy A.Net" Height="350" Width="525" Icon="Envelope2015.ico" FontSize="14.667">
     <Grid>
-        
+        <Button x:Name="button" Content="Manual Start!" HorizontalAlignment="Left" Margin="31,25,0,0" VerticalAlignment="Top" Width="111" Click="button_Click"/>
+        <Label x:Name="labelForTimer" Content="Timer is Start Auto Every: 00 Hrs. 00 Min. 00 Sec." HorizontalAlignment="Left" Margin="180,22,0,0" VerticalAlignment="Top" Width="327"/>
+
     </Grid>
 </Window>
