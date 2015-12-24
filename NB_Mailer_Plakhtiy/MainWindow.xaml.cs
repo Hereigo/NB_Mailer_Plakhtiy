@@ -24,47 +24,51 @@ namespace NB_Mailer_Plakhtiy
     /// </summary>
     public partial class MainWindow : Window
     {
-        // SET UP NLOG :
-        public static Logger nLog = LogManager.GetCurrentClassLogger();
+        public static Logger nLogger = LogManager.GetCurrentClassLogger();
+
+        // TODO: STATIC CLASS FOR STATIC FIELDS FOR SETTINGS
 
         public static string rootDir;
 
+        public static int timerHrs = 0, timerMin = 0, timerSec = 10;
+
         public MainWindow()
         {
-            nLog.Trace("Ver.Net: {0}", Environment.Version.ToString());
+            nLogger.Trace("Ver.Net: {0}", Environment.Version.ToString());
 
             InitializeComponent();
-
-            String[] settingsStr = GetRootDirFromSettsFile();
 #if DEBUG
             string debugOrRelease = "D E B U G";
-            rootDir = settingsStr[0];
 #else
             string debugOrRelease = "R E L E A S E";
-            rootDir = settingsStr[1];
 #endif
-            MessageBoxResult mbr = MessageBox.Show(debugOrRelease + " !!! - version started." + Environment.NewLine +
-            Environment.NewLine + "Close The App.?", "WARNING!", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-            if (mbr == MessageBoxResult.Yes)
-                Application.Current.Shutdown();
+            MessageBoxResult mbr = MessageBox.Show(debugOrRelease + " !!! - version." + Environment.NewLine +
+            Environment.NewLine + "Close This App.?", "WARNING!", MessageBoxButton.YesNo, MessageBoxImage.Warning);
 
-            int timeH = 0;
-            int timeM = 0;
-            int timeS = 10;
+            if (mbr == MessageBoxResult.Yes) Application.Current.Shutdown();
 
-            labelForTimer.Content = "Timer is Start Every: " + timeH + " Hrs. " + timeM + " Min. " + timeS + " Sec.";
+            // T I M E R !!!!!!!!!
+
+            labelForTimer.Content = "Auto Start Every: " + timerHrs + " Hrs. " + timerMin + " Min. " + timerSec + " Sec.";
 
             DispatcherTimer dispchTimer = new DispatcherTimer();
-            dispchTimer.Interval = new TimeSpan(timeH, timeM, timeS);
+            dispchTimer.Interval = new TimeSpan(timerHrs, timerMin, timerSec);
             dispchTimer.Tick += DispchTimer_Tick;
             dispchTimer.Start();
         }
 
-        private void DispchTimer_Tick(object sender, EventArgs e) { StartJob(); }
+        private void DispchTimer_Tick(object sender, EventArgs e)
+        {
+            StartJob();
+        }
 
-        private void button_Click(object sender, RoutedEventArgs e) { StartJob(); }
+        private void button_Click(object sender, RoutedEventArgs e)
+        {
+            StartJob();
+        }
 
-        private String[] GetRootDirFromSettsFile()
+        // TODO: MUST BE REFACTORED!!!!!!!
+        private String GetRootDirFromSettsFile()
         {
             String[] stringsSetts = new string[2];
             try
@@ -76,18 +80,23 @@ namespace NB_Mailer_Plakhtiy
             }
             catch (Exception exc)
             {
-                nLog.Error("GetRootDirFromSettsFile() - " + exc.Message);
+                nLogger.Error("GetRootDirFromSettsFile() - " + exc.Message);
                 MessageBox.Show("GetRootDirFromSettsFile() - " + exc.ToString());
             }
-            return stringsSetts;
+#if DEBUG
+            return stringsSetts[0];
+#else
+            return stringsSetts[1];
+#endif
         }
+
 
         // USEFUL CODESNIPPET :)
         //
         // try{ }
         // catch (Exception exc) { 
-        //     nLog.Error(currentMethodName! + " - " + exc.Message);
-        //     MessageBox.Show(currentMethodName! + " - " + exc.ToString());
+        //     nLogger.Error(currentMethodName - " + exc.Message);
+        //     MessageBox.Show(currentMethodName - " + exc.ToString());
         // }
 
 
@@ -97,27 +106,62 @@ namespace NB_Mailer_Plakhtiy
         {
             try
             {
+                rootDir = GetRootDirFromSettsFile();
 #if !DEBUG
                 // RUN MAIL3.BAT & TCPFOSS :
                 Process.Start(rootDir + "\\MAIL3.BAT").WaitForExit();
 #endif
-                // IF OUTGOING FILES EXISTS - BKP & RENAME !
+                //  A F T E R  23:00 !!!
 
-                // RUN MAIL3.BAT :
+                if (DateTime.Now.Hour > 22)
+                {
+                    // TODO : CHECK IF BKP NOT EXISTS & CREATE IT 
+                    // TODO : CHECK IF BKP NOT EXISTS & CREATE IT 
 
-                // IF RECEIVE CORR. FOR SPRUSNBU RUN CORRSPR.BAT
-                // WAIT !
-                // UPGRADE SPRUSNBU$ IN DB :
+                    // TODO: IMLEMENT TWO BACKUPERS !!!!!
+                    // TODO: IMLEMENT TWO BACKUPERS !!!!!
 
-                // IF TODAY INCOME DIR EXISTS :
-                //      READ ALL ENVELOPES :
-                //      FOREACH ENVELOPE :
-                //          GET FULL INFO :
-                //          CHECK SMTH...
-                //          WRITE INTO DB :
-                //          REPORT ! :
+                    // Application.Exit();
+                }
+                else
+                {
+                    // I M P O R T A N T   B E F O R E !!!!!!!!!!
+                    // I M P O R T A N T   B E F O R E !!!!!!!!!!
 
+                    // PrepareFilesForSendToBanx(); !!!!!!!!!!!!!!
 
+                    // IF OUTGOING FILES EXISTS - BKP & RENAME !
+
+                    Process.Start(rootDir + "\\MAIL3.bat"); // + TCPFOSS INSIDE !!!
+
+                    if (timerMin < 1)
+                    {
+                        nLogger.Warn("Timer is set for less then 1 minute!!!");
+                    }
+                    else
+                    {
+                        if ((DateTime.Now.Hour == 10 | DateTime.Now.Hour == 14) && DateTime.Now.Minute < ((timerMin * 2) - 1))
+                        {
+                            nLogger.Warn(rootDir + "\\CORRSPR3_aaa.bat - Starting...");
+                            Process.Start(rootDir + "\\CORRSPR3_aaa.bat");
+                        }
+                    }
+
+                    // RUN MAIL3.BAT :
+
+                    // IF RECEIVE CORR. FOR SPRUSNBU RUN CORRSPR.BAT
+                    // WAIT !
+                    // UPGRADE SPRUSNBU$ IN DB :
+
+                    // IF TODAY INCOME DIR EXISTS :
+                    //      READ ALL ENVELOPES :
+                    //      FOREACH ENVELOPE :
+                    //          GET FULL INFO :
+                    //          CHECK SMTH...
+                    //          WRITE INTO DB :
+                    //          REPORT ! :
+
+                }
 #if !DEBUG
                 // RUN MAIL3.BAT & TCPFOSS :
                 Process.Start(rootDir + "\\MAIL3.BAT").WaitForExit();
@@ -125,11 +169,9 @@ namespace NB_Mailer_Plakhtiy
             }
             catch (Exception exc)
             {
-                nLog.Error("StartJob() - " + exc.Message);
+                nLogger.Error("StartJob() - " + exc.Message);
                 MessageBox.Show("StartJob() - " + exc.ToString());
             }
         }
-
-
     }
 }
