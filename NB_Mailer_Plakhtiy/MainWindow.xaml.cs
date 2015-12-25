@@ -16,6 +16,7 @@ using NLog;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Threading;
+using System.Reflection;
 
 namespace NB_Mailer_Plakhtiy
 {
@@ -71,6 +72,8 @@ namespace NB_Mailer_Plakhtiy
         private String GetRootDirFromSettsFile()
         {
             String[] stringsSetts = new string[2];
+
+            string methodName = MethodInfo.GetCurrentMethod().Name;
             try
             {
                 StreamReader sr = new StreamReader("Git_Ignore_Strings_Settings.txt");
@@ -80,8 +83,8 @@ namespace NB_Mailer_Plakhtiy
             }
             catch (Exception exc)
             {
-                nLogger.Error("GetRootDirFromSettsFile() - " + exc.Message);
-                MessageBox.Show("GetRootDirFromSettsFile() - " + exc.ToString());
+                nLogger.Error(methodName + "() - " + exc.Message);
+                MessageBox.Show(methodName + "() - " + exc.ToString());
             }
 #if DEBUG
             return stringsSetts[0];
@@ -93,10 +96,11 @@ namespace NB_Mailer_Plakhtiy
 
         // USEFUL CODESNIPPET :)
         //
+        // string methodName = MethodInfo.GetCurrentMethod().Name;
         // try{ }
         // catch (Exception exc) { 
-        //     nLogger.Error(currentMethodName - " + exc.Message);
-        //     MessageBox.Show(currentMethodName - " + exc.ToString());
+        //     nLogger.Error(methodName + "() - " + exc.Message);
+        //     MessageBox.Show(methodName + "() - " + exc.ToString());
         // }
 
 
@@ -104,6 +108,7 @@ namespace NB_Mailer_Plakhtiy
         // START THE NAIN JOB :
         private void StartJob()
         {
+            string methodName = MethodInfo.GetCurrentMethod().Name;
             try
             {
                 rootDir = GetRootDirFromSettsFile();
@@ -115,6 +120,12 @@ namespace NB_Mailer_Plakhtiy
 
                 if (DateTime.Now.Hour > 22)
                 {
+
+                    // TODO: CALL EVENING LOG-UPLOADER FROM ALFA_TEST !!!
+                    // TODO: CALL EVENING LOG-UPLOADER FROM ALFA_TEST !!!
+
+                    string todayBkpFileName = "";
+
                     // TODO : CHECK IF BKP NOT EXISTS & CREATE IT 
                     // TODO : CHECK IF BKP NOT EXISTS & CREATE IT 
 
@@ -126,13 +137,17 @@ namespace NB_Mailer_Plakhtiy
                 else
                 {
                     // I M P O R T A N T   B E F O R E !!!!!!!!!!
+                    BackUpAndRenameBeforeToBank();
+
                     // I M P O R T A N T   B E F O R E !!!!!!!!!!
 
-                    // PrepareFilesForSendToBanx(); !!!!!!!!!!!!!!
+                    // BKP_And_PrepareFilesForSendToBanx(); !!!!!!!!!!!!!!
+                    // BKP_And_PrepareFilesForSendToBanx(); !!!!!!!!!!!!!!
 
                     // IF OUTGOING FILES EXISTS - BKP & RENAME !
 
-                    Process.Start(rootDir + "\\MAIL3.bat"); // + TCPFOSS INSIDE !!!
+                    nLogger.Warn(rootDir + "\\MAIL3.bat - Starting...");
+                    //Process.Start(rootDir + "\\MAIL3.bat"); // + TCPFOSS INSIDE !!!
 
                     if (timerMin < 1)
                     {
@@ -143,7 +158,7 @@ namespace NB_Mailer_Plakhtiy
                         if ((DateTime.Now.Hour == 10 | DateTime.Now.Hour == 14) && DateTime.Now.Minute < ((timerMin * 2) - 1))
                         {
                             nLogger.Warn(rootDir + "\\CORRSPR3_aaa.bat - Starting...");
-                            Process.Start(rootDir + "\\CORRSPR3_aaa.bat");
+                            // Process.Start(rootDir + "\\CORRSPR3_aaa.bat");
                         }
                     }
 
@@ -169,8 +184,28 @@ namespace NB_Mailer_Plakhtiy
             }
             catch (Exception exc)
             {
-                nLogger.Error("StartJob() - " + exc.Message);
-                MessageBox.Show("StartJob() - " + exc.ToString());
+                nLogger.Error(methodName + "() - " + exc.Message);
+                MessageBox.Show(methodName + "() - " + exc.ToString());
+            }
+        }
+
+
+        // TODO: MUST BE REFACTORED!!!!!
+        // TODO: MUST BE REFACTORED!!!!!
+        private void BackUpAndRenameBeforeToBank()
+        {
+            string methodName = MethodInfo.GetCurrentMethod().Name;
+            try
+            {
+
+
+
+
+            }
+            catch (Exception exc)
+            {
+                nLogger.Error(methodName + "() - " + exc.Message);
+                MessageBox.Show(methodName + "() - " + exc.ToString());
             }
         }
     }
