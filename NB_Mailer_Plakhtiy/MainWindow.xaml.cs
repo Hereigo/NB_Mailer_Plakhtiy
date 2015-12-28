@@ -94,7 +94,7 @@ namespace NB_Mailer_Plakhtiy
         }
 
 
-        // USEFUL CODESNIPPET :)
+        // - USEFUL CODESNIPPET :)
         //
         // string methodName = MethodInfo.GetCurrentMethod().Name;
         // try{ }
@@ -111,6 +111,14 @@ namespace NB_Mailer_Plakhtiy
             string methodName = MethodInfo.GetCurrentMethod().Name;
             try
             {
+                //  A L F A   T E S T I N G   O N L Y  !!!!
+                //  A L F A   T E S T I N G   O N L Y  !!!!
+
+                Git_Ignore_ALFA_TEST alfa = new Git_Ignore_ALFA_TEST();
+
+                //  A L F A   T E S T I N G   O N L Y  !!!!
+                //  A L F A   T E S T I N G   O N L Y  !!!!
+
                 rootDir = GetRootDirFromSettsFile();
 #if !DEBUG
                 // RUN MAIL3.BAT & TCPFOSS :
@@ -120,38 +128,45 @@ namespace NB_Mailer_Plakhtiy
 
                 if (DateTime.Now.Hour > 22)
                 {
-
                     // TODO: CALL EVENING LOG-UPLOADER FROM ALFA_TEST !!!
                     // TODO: CALL EVENING LOG-UPLOADER FROM ALFA_TEST !!!
+                    alfa.AlfaTest_EveningLogUpload();
 
-                    string todayBkpFileName = "";
+                    string todayBackUp = @"C:\NBUMAIL\USERD\Admin\ARH\" + DateTime.Now.ToString("Bkp_yyMMdd") + ".RAR";
 
                     // TODO : CHECK IF BKP NOT EXISTS & CREATE IT 
                     // TODO : CHECK IF BKP NOT EXISTS & CREATE IT 
+                    if (!File.Exists(todayBackUp))
+                    {
+                        alfa.AlfaTest_TodayBkpCreate(todayBackUp);
+                    }
 
                     // TODO: IMLEMENT TWO BACKUPERS !!!!!
                     // TODO: IMLEMENT TWO BACKUPERS !!!!!
 
-                    // Application.Exit();
+
+                    // TODO: T E M P O R A R Y !!!!!!!!!!!!
+                    // TODO: T E M P O R A R Y !!!!!!!!!!!!
+                    // TODO: T E M P O R A R Y !!!!!!!!!!!!
+
+                    Application.Current.Shutdown();
+
                 }
                 else
                 {
-                    // I M P O R T A N T   B E F O R E !!!!!!!!!!
-                    BackUpAndRenameBeforeToBank();
-
-                    // I M P O R T A N T   B E F O R E !!!!!!!!!!
-
-                    // BKP_And_PrepareFilesForSendToBanx(); !!!!!!!!!!!!!!
-                    // BKP_And_PrepareFilesForSendToBanx(); !!!!!!!!!!!!!!
+                    // I M P O R T A N T   B E F O R E   S E N D I N G !!!!!!!!!!
+                    // I M P O R T A N T   B E F O R E   S E N D I N G !!!!!!!!!!
 
                     // IF OUTGOING FILES EXISTS - BKP & RENAME !
-
-                    nLogger.Warn(rootDir + "\\MAIL3.bat - Starting...");
-                    //Process.Start(rootDir + "\\MAIL3.bat"); // + TCPFOSS INSIDE !!!
+                    BackUpAndRenameBeforeToBank(rootDir);
+#if !DEBUG
+                    // RUN MAIL3.BAT & TCPFOSS :
+                    Process.Start(rootDir + "\\MAIL3.BAT").WaitForExit();
+#endif
 
                     if (timerMin < 1)
                     {
-                        nLogger.Warn("Timer is set for less then 1 minute!!!");
+                        nLogger.Error("Timer is set for less then 1 minute!!!");
                     }
                     else
                     {
@@ -177,8 +192,9 @@ namespace NB_Mailer_Plakhtiy
                     //          REPORT ! :
 
                 }
-#if !DEBUG
+
                 // RUN MAIL3.BAT & TCPFOSS :
+#if !DEBUG
                 Process.Start(rootDir + "\\MAIL3.BAT").WaitForExit();
 #endif
             }
@@ -190,17 +206,42 @@ namespace NB_Mailer_Plakhtiy
         }
 
 
+
+
         // TODO: MUST BE REFACTORED!!!!!
         // TODO: MUST BE REFACTORED!!!!!
-        private void BackUpAndRenameBeforeToBank()
+
+        private void BackUpAndRenameBeforeToBank(string rootPath)
         {
             string methodName = MethodInfo.GetCurrentMethod().Name;
             try
             {
+                string dirOutForBanx = rootPath + "\\ARM3\\EP_O";
 
+                string dirOutForSent = rootPath + "\\SENT\\" +
+                    DateTime.Now.ToString("yyyy") + "\\" + DateTime.Now.ToString("MM-dd");
 
+                if (!Directory.Exists(dirOutForSent)) Directory.CreateDirectory(dirOutForSent);
 
+                DirectoryInfo[] allSubDirs = new DirectoryInfo(dirOutForBanx).GetDirectories();
 
+                foreach (DirectoryInfo dir in allSubDirs)
+                {
+                    FileInfo[] outgoimgFiles = dir.GetFiles();
+
+                    if (outgoimgFiles.Length > 0)
+                    {
+                        String newUniqueName = System.IO.Path.GetFileNameWithoutExtension(outgoimgFiles[0].FullName) + "_" + Guid.NewGuid() + ".zip";
+
+                        File.Copy(outgoimgFiles[0].FullName, dirOutForSent + "\\" + newUniqueName);
+
+                        // R E P O R T !!!!!!!!!!!
+                        // R E P O R T !!!!!!!!!!!
+                        nLogger.Warn(newUniqueName + " - Sent To - " + dir.Name);
+
+                        File.Move(outgoimgFiles[0].FullName, dir.FullName + "\\" + "1od_" + DateTime.Now.ToString("MMdd") + ".zip");
+                    }
+                }
             }
             catch (Exception exc)
             {
@@ -208,5 +249,6 @@ namespace NB_Mailer_Plakhtiy
                 MessageBox.Show(methodName + "() - " + exc.ToString());
             }
         }
+
     }
 }
