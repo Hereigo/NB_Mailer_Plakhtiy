@@ -5,9 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NB_Mailer_Plakhtiy"
         mc:Ignorable="d"
-        Title=" # NBU-Mailer # 2015 © Plakhtiy A.Net" Height="350" Width="525" Icon="Envelope2015.ico" FontSize="14.667">
+        Title=" # NBU-Mailer # 2015 © Plakhtiy A.Net" Height="181.908" Width="525" Icon="Envelope2015.ico" FontSize="14.667">
     <Grid>
-        <Button x:Name="button" Content="... or Manual Start!" HorizontalAlignment="Left" Margin="316,13,0,0" VerticalAlignment="Top" Width="128" Click="button_Click"/>
+        <Button x:Name="button" Content="... or Manual Start!" HorizontalAlignment="Left" Margin="334,13,0,0" VerticalAlignment="Top" Width="149" Click="button_Click"/>
         <Label x:Name="labelForTimer" Content="Auto Start Every: 00 Hrs. 00 Min. 00 Sec." HorizontalAlignment="Left" Margin="18,10,0,0" VerticalAlignment="Top" Width="293" FontWeight="Bold"/>
+        <Label x:Name="label4messages" Content=". . ." HorizontalAlignment="Left" Margin="18,56,0,0" VerticalAlignment="Top" Width="477"/>
     </Grid>
 </Window>

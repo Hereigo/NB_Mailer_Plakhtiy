@@ -80,11 +80,12 @@ namespace NB_Mailer_Plakhtiy
                 stringsSetts[0] = sr.ReadLine();
                 stringsSetts[1] = sr.ReadLine();
                 sr.Close();
+                label4messages.Content = DateTime.Now.ToShortTimeString() + " : ReadedSettings Count Is  - " + stringsSetts.Length;
             }
             catch (Exception exc)
             {
                 nLogger.Error(methodName + "() - " + exc.Message);
-                MessageBox.Show(methodName + "() - " + exc.ToString());
+                label4messages.Content = DateTime.Now.ToShortTimeString() + " : " + methodName + "() - " + exc.ToString();
             }
 #if DEBUG
             return stringsSetts[0];
@@ -94,13 +95,14 @@ namespace NB_Mailer_Plakhtiy
         }
 
 
-        // - USEFUL CODESNIPPET :)
+
+        // - USEFUL CODE-SNIPPET :)
         //
         // string methodName = MethodInfo.GetCurrentMethod().Name;
         // try{ }
         // catch (Exception exc) { 
         //     nLogger.Error(methodName + "() - " + exc.Message);
-        //     MessageBox.Show(methodName + "() - " + exc.ToString());
+        //     label4messages.Content = DateTime.Now.ToShortTimeString() + " : " + methodName + "() - " + exc.ToString());
         // }
 
 
@@ -108,34 +110,36 @@ namespace NB_Mailer_Plakhtiy
         // START THE NAIN JOB :
         private void StartJob()
         {
+            if (timerMin < 1)
+            {
+                nLogger.Error("Timer is set for less then 1 minute!!!");
+                MessageBox.Show("Timer is set for less then 1 minute!!!");
+            }
+
             string methodName = MethodInfo.GetCurrentMethod().Name;
             try
             {
                 //  A L F A   T E S T I N G   O N L Y  !!!!
                 //  A L F A   T E S T I N G   O N L Y  !!!!
-
                 Git_Ignore_ALFA_TEST alfa = new Git_Ignore_ALFA_TEST();
-
                 //  A L F A   T E S T I N G   O N L Y  !!!!
                 //  A L F A   T E S T I N G   O N L Y  !!!!
 
                 rootDir = GetRootDirFromSettsFile();
-#if !DEBUG
                 // RUN MAIL3.BAT & TCPFOSS :
                 Process.Start(rootDir + "\\MAIL3.BAT").WaitForExit();
-#endif
+
+                #region  A F T E R  23:00 !!!
                 //  A F T E R  23:00 !!!
 
                 if (DateTime.Now.Hour > 22)
                 {
-                    // TODO: CALL EVENING LOG-UPLOADER FROM ALFA_TEST !!!
-                    // TODO: CALL EVENING LOG-UPLOADER FROM ALFA_TEST !!!
+                    // CALL EVENING LOG-UPLOADER FROM ALFA_TEST !!!
                     alfa.AlfaTest_EveningLogUpload();
 
                     string todayBackUp = @"C:\NBUMAIL\USERD\Admin\ARH\" + DateTime.Now.ToString("Bkp_yyMMdd") + ".RAR";
 
-                    // TODO : CHECK IF BKP NOT EXISTS & CREATE IT 
-                    // TODO : CHECK IF BKP NOT EXISTS & CREATE IT 
+                    // CHECK IF BKP NOT EXISTS & CREATE IT 
                     if (!File.Exists(todayBackUp))
                     {
                         alfa.AlfaTest_TodayBkpCreate(todayBackUp);
@@ -152,36 +156,25 @@ namespace NB_Mailer_Plakhtiy
                     Application.Current.Shutdown();
 
                 }
+                #endregion
                 else
                 {
                     // I M P O R T A N T   B E F O R E   S E N D I N G !!!!!!!!!!
-                    // I M P O R T A N T   B E F O R E   S E N D I N G !!!!!!!!!!
-
                     // IF OUTGOING FILES EXISTS - BKP & RENAME !
                     BackUpAndRenameBeforeToBank(rootDir);
-#if !DEBUG
+
                     // RUN MAIL3.BAT & TCPFOSS :
                     Process.Start(rootDir + "\\MAIL3.BAT").WaitForExit();
-#endif
 
-                    if (timerMin < 1)
+                    if ((DateTime.Now.Hour == 10 | DateTime.Now.Hour == 14) && DateTime.Now.Minute < ((timerMin * 2) - 1))
                     {
-                        nLogger.Error("Timer is set for less then 1 minute!!!");
+                        Process.Start(rootDir + "\\CORRSPR3_aaa.bat");
                     }
-                    else
-                    {
-                        if ((DateTime.Now.Hour == 10 | DateTime.Now.Hour == 14) && DateTime.Now.Minute < ((timerMin * 2) - 1))
-                        {
-                            nLogger.Warn(rootDir + "\\CORRSPR3_aaa.bat - Starting...");
-                            // Process.Start(rootDir + "\\CORRSPR3_aaa.bat");
-                        }
-                    }
-
-                    // RUN MAIL3.BAT :
-
                     // IF RECEIVE CORR. FOR SPRUSNBU RUN CORRSPR.BAT
                     // WAIT !
                     // UPGRADE SPRUSNBU$ IN DB :
+
+                    alfa.AlfaTest_CheckEnvelopesAndUploadInDB(rootDir);
 
                     // IF TODAY INCOME DIR EXISTS :
                     //      READ ALL ENVELOPES :
@@ -194,14 +187,12 @@ namespace NB_Mailer_Plakhtiy
                 }
 
                 // RUN MAIL3.BAT & TCPFOSS :
-#if !DEBUG
                 Process.Start(rootDir + "\\MAIL3.BAT").WaitForExit();
-#endif
             }
             catch (Exception exc)
             {
                 nLogger.Error(methodName + "() - " + exc.Message);
-                MessageBox.Show(methodName + "() - " + exc.ToString());
+                label4messages.Content = DateTime.Now.ToShortTimeString() + " : " + methodName + "() - " + exc.Message;
             }
         }
 
@@ -225,30 +216,36 @@ namespace NB_Mailer_Plakhtiy
 
                 DirectoryInfo[] allSubDirs = new DirectoryInfo(dirOutForBanx).GetDirectories();
 
+                int filesForSend = 0;
+
                 foreach (DirectoryInfo dir in allSubDirs)
                 {
                     FileInfo[] outgoimgFiles = dir.GetFiles();
 
                     if (outgoimgFiles.Length > 0)
                     {
+                        filesForSend++;
+
                         String newUniqueName = System.IO.Path.GetFileNameWithoutExtension(outgoimgFiles[0].FullName) + "_" + Guid.NewGuid() + ".zip";
 
                         File.Copy(outgoimgFiles[0].FullName, dirOutForSent + "\\" + newUniqueName);
 
-                        // R E P O R T !!!!!!!!!!!
-                        // R E P O R T !!!!!!!!!!!
                         nLogger.Warn(newUniqueName + " - Sent To - " + dir.Name);
 
                         File.Move(outgoimgFiles[0].FullName, dir.FullName + "\\" + "1od_" + DateTime.Now.ToString("MMdd") + ".zip");
                     }
                 }
+
+                label4messages.Content = DateTime.Now.ToShortTimeString() + " : Files For Send - " + filesForSend;
+
             }
             catch (Exception exc)
             {
                 nLogger.Error(methodName + "() - " + exc.Message);
-                MessageBox.Show(methodName + "() - " + exc.ToString());
+                label4messages.Content = DateTime.Now.ToShortTimeString() + " : " + methodName + "() - " + exc.Message;
             }
         }
+
 
     }
 }
