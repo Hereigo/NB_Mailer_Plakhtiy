@@ -1,22 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using NLog;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Threading;
 using System.Reflection;
+using NLog;
 
 namespace NB_Mailer_Plakhtiy
 {
@@ -31,26 +19,24 @@ namespace NB_Mailer_Plakhtiy
 
         public static string rootDir;
 
-        public static int timerHrs = 0, timerMin = 0, timerSec = 10;
+        public static int timerHrs = 0, timerMin = 15, timerSec = 0;
 
         public MainWindow()
         {
             nLogger.Trace("Ver.Net: {0}", Environment.Version.ToString());
 
             InitializeComponent();
-#if DEBUG
-            string debugOrRelease = "D E B U G";
-#else
-            string debugOrRelease = "R E L E A S E";
-#endif
-            MessageBoxResult mbr = MessageBox.Show(debugOrRelease + " !!! - version." + Environment.NewLine +
-            Environment.NewLine + "Close This App.?", "WARNING!", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-
-            if (mbr == MessageBoxResult.Yes) Application.Current.Shutdown();
 
             // T I M E R !!!!!!!!!
 
-            labelForTimer.Content = "Auto Start Every: " + timerHrs + " Hrs. " + timerMin + " Min. " + timerSec + " Sec.";
+            if (timerMin < 1)
+            {
+                nLogger.Error("Timer is set for less then 1 minute!!!");
+                MessageBox.Show("Timer is set for less then 1 minute!!!");
+            }
+
+            labelForTimer.Content = "Auto Start Every: " + timerHrs + " Hrs. " + timerMin + " Min. " + timerSec + " Sec." +
+                " - Next at " + DateTime.Now.AddHours(timerHrs).AddMinutes(timerMin).AddSeconds(timerSec).ToShortTimeString();
 
             DispatcherTimer dispchTimer = new DispatcherTimer();
             dispchTimer.Interval = new TimeSpan(timerHrs, timerMin, timerSec);
@@ -110,12 +96,6 @@ namespace NB_Mailer_Plakhtiy
         // START THE NAIN JOB :
         private void StartJob()
         {
-            if (timerMin < 1)
-            {
-                nLogger.Error("Timer is set for less then 1 minute!!!");
-                MessageBox.Show("Timer is set for less then 1 minute!!!");
-            }
-
             string methodName = MethodInfo.GetCurrentMethod().Name;
             try
             {
@@ -126,8 +106,6 @@ namespace NB_Mailer_Plakhtiy
                 //  A L F A   T E S T I N G   O N L Y  !!!!
 
                 rootDir = GetRootDirFromSettsFile();
-                // RUN MAIL3.BAT & TCPFOSS :
-                Process.Start(rootDir + "\\MAIL3.BAT").WaitForExit();
 
                 #region  A F T E R  23:00 !!!
                 //  A F T E R  23:00 !!!
@@ -153,7 +131,9 @@ namespace NB_Mailer_Plakhtiy
                     // TODO: T E M P O R A R Y !!!!!!!!!!!!
                     // TODO: T E M P O R A R Y !!!!!!!!!!!!
 
-                    Application.Current.Shutdown();
+
+                    nLogger.Warn("NBU-Mailer 2015 Finished All Tasks For " + DateTime.Now);
+                    // Application.Current.Shutdown();
 
                 }
                 #endregion
@@ -163,18 +143,30 @@ namespace NB_Mailer_Plakhtiy
                     // IF OUTGOING FILES EXISTS - BKP & RENAME !
                     BackUpAndRenameBeforeToBank(rootDir);
 
-                    // RUN MAIL3.BAT & TCPFOSS :
+                    // RUN MAIL3.BAT - NOT TCPFOSS !!!
+                    label4messages.Content = "Trying To Run Mail3.bat ...";
+
                     Process.Start(rootDir + "\\MAIL3.BAT").WaitForExit();
 
+                    #region  C O R R S P R
                     if ((DateTime.Now.Hour == 10 | DateTime.Now.Hour == 14) && DateTime.Now.Minute < ((timerMin * 2) - 1))
                     {
+                        label4messages.Content = "Trying To Run CORRSPR3_aaa.bat ...";
+
                         Process.Start(rootDir + "\\CORRSPR3_aaa.bat");
                     }
                     // IF RECEIVE CORR. FOR SPRUSNBU RUN CORRSPR.BAT
                     // WAIT !
                     // UPGRADE SPRUSNBU$ IN DB :
+                    #endregion
 
-                    alfa.AlfaTest_CheckEnvelopesAndUploadInDB(rootDir);
+                    label4messages.Content = "Trying To CheckEnvelopesAndUploadInDB()...";
+
+                    label4messages.Content = alfa.AlfaTest_CheckEnvelopesAndUploadInDB(rootDir);
+
+                    // TODO: R E F A C T O R   A L F A _ T E S T  !!!
+                    // TODO: R E F A C T O R   A L F A _ T E S T  !!!
+                    // TODO: R E F A C T O R   A L F A _ T E S T  !!!
 
                     // IF TODAY INCOME DIR EXISTS :
                     //      READ ALL ENVELOPES :
@@ -186,8 +178,17 @@ namespace NB_Mailer_Plakhtiy
 
                 }
 
-                // RUN MAIL3.BAT & TCPFOSS :
+
+                // RUN MAIL3.BAT - NOT TCPFOSS !!!
+                label4messages.Content = "Trying To Run Mail3.bat ...";
                 Process.Start(rootDir + "\\MAIL3.BAT").WaitForExit();
+
+
+                // RUN TCPFOSS ONLY !!!
+                label4messages.Content = "Trying To Run TCPFOSS.bat ...";
+                Process.Start(rootDir + "\\TCPFOSS.BAT").WaitForExit();
+
+
             }
             catch (Exception exc)
             {
@@ -195,8 +196,6 @@ namespace NB_Mailer_Plakhtiy
                 label4messages.Content = DateTime.Now.ToShortTimeString() + " : " + methodName + "() - " + exc.Message;
             }
         }
-
-
 
 
         // TODO: MUST BE REFACTORED!!!!!
@@ -245,7 +244,5 @@ namespace NB_Mailer_Plakhtiy
                 label4messages.Content = DateTime.Now.ToShortTimeString() + " : " + methodName + "() - " + exc.Message;
             }
         }
-
-
     }
 }
