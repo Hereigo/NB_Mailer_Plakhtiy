@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title=" # NBU-Mailer # 2015 © Plakhtiy A.Net" Height="181.908" Width="443.64" Icon="Envelope2015.ico" FontSize="14.667">
     <Grid>
-        <Button x:Name="button" Content="... or Run Now!" HorizontalAlignment="Left" Margin="315,45,0,0" VerticalAlignment="Top" Width="107" Click="button_Click"/>
+        <Button x:Name="button" Content="... or Run Now!" HorizontalAlignment="Left" Margin="303,40,0,0" VerticalAlignment="Top" Width="123" Click="button_Click"/>
         <Label x:Name="labelForTimer" Content="Auto Start Every: 00 Hrs. 00 Min. 00 Sec. - Next at 23:59:59" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="420" FontWeight="Bold"/>
         <Label x:Name="label4messages" Content=". . ." HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top" Width="416"/>
     </Grid>

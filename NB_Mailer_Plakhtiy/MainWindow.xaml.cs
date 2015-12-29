@@ -154,6 +154,8 @@ namespace NB_Mailer_Plakhtiy
                         label4messages.Content = "Trying To Run CORRSPR3_aaa.bat ...";
 
                         Process.Start(rootDir + "\\CORRSPR3_aaa.bat");
+
+                        nLogger.Warn(rootDir + "\\CORRSPR3_aaa.bat - Started.");
                     }
                     // IF RECEIVE CORR. FOR SPRUSNBU RUN CORRSPR.BAT
                     // WAIT !
