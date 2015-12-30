@@ -23,7 +23,7 @@ namespace NB_Mailer_Plakhtiy
 
         public MainWindow()
         {
-            nLogger.Warn("NBU-Mailer Started. Ver.Net: {0}", Environment.Version.ToString());
+            nLogger.Warn("Запустился NBU-Mailer 2015. Версия .Net: {0}", Environment.Version.ToString());
 
             InitializeComponent();
 
@@ -125,14 +125,16 @@ namespace NB_Mailer_Plakhtiy
 
                     if (!File.Exists(todayBackUp))
                     {
-                        alfa.AlfaTest_EveningLogUpload();                        
+                        alfa.AlfaTest_EveningLogUpload();
 
                         alfa.AlfaTest_TodayBkpCreate(todayBackUp);
 
                         // TODO: IMLEMENT TWO BACKUPERS !!!!!
                         // TODO: IMLEMENT TWO BACKUPERS !!!!!
 
-
+                    }
+                    else
+                    { 
 
 
 
@@ -143,7 +145,7 @@ namespace NB_Mailer_Plakhtiy
 
 
 
-                        nLogger.Warn("NBU-Mailer 2015 Finished All Tasks For " + DateTime.Now);
+                        nLogger.Warn("NBU-Mailer 2015 Закончил все задачи на сегодня " + DateTime.Now);
                     }
 
 
@@ -162,14 +164,15 @@ namespace NB_Mailer_Plakhtiy
 
                     Process.Start(rootDir + "\\MAIL3.BAT").WaitForExit();
 
-                    #region  C O R R S P R
+                    #region  C O R R S P R 
+
                     if ((DateTime.Now.Hour == 10 | DateTime.Now.Hour == 14) && DateTime.Now.Minute < ((timerMin * 2) - 1))
                     {
                         label4messages.Content = "Trying To Run CORRSPR3_aaa.bat ...";
 
                         Process.Start(rootDir + "\\CORRSPR3_aaa.bat");
 
-                        nLogger.Warn(rootDir + "Started Correction For SPRUSNBU.DBF (CORRSPR3_aaa.bat)");
+                        nLogger.Warn("Запустился CorrSpr3_aaa.bat для корректировки справочника SPRUSNBU.DBF");
                     }
                     // IF RECEIVE CORR. FOR SPRUSNBU RUN CORRSPR.BAT
                     // WAIT !
@@ -245,13 +248,13 @@ namespace NB_Mailer_Plakhtiy
 
                         File.Copy(outgoimgFiles[0].FullName, dirOutForSent + "\\" + newUniqueName);
 
-                        nLogger.Warn(newUniqueName.Substring(0,16) + ".zip - Sent To - " + dir.Name);
+                        nLogger.Warn(newUniqueName.Substring(0,16) + ".zip - Отправлен в - " + dir.Name);
 
                         File.Move(outgoimgFiles[0].FullName, dir.FullName + "\\" + "1od_" + DateTime.Now.ToString("MMdd") + ".zip");
                     }
                 }
 
-                label4messages.Content = DateTime.Now.ToShortTimeString() + " : Files For Send - " + filesForSend;
+                label4messages.Content = DateTime.Now.ToShortTimeString() + " : Отправлено файлов - " + filesForSend;
 
             }
             catch (Exception exc)
