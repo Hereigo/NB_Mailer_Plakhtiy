@@ -23,7 +23,7 @@ namespace NB_Mailer_Plakhtiy
 
         public MainWindow()
         {
-            nLogger.Trace("Ver.Net: {0}", Environment.Version.ToString());
+            nLogger.Warn("NBU-Mailer Started. Ver.Net: {0}", Environment.Version.ToString());
 
             InitializeComponent();
 
@@ -96,6 +96,13 @@ namespace NB_Mailer_Plakhtiy
         // START THE NAIN JOB :
         private void StartJob()
         {
+            labelForTimer.Content = "Auto Start Every: " + timerHrs + " Hrs. " + timerMin + " Min. " + timerSec + " Sec." +
+                " - Next at " + DateTime.Now.AddHours(timerHrs).AddMinutes(timerMin).AddSeconds(timerSec).ToShortTimeString();
+
+            // TODO: RUN EACH TASK IF CERTAIN FILES ARE EXISTS !!!
+            // TODO: RUN EACH TASK IF CERTAIN FILES ARE EXISTS !!!
+            // TODO: RUN EACH TASK IF CERTAIN FILES ARE EXISTS !!!
+
             string methodName = MethodInfo.GetCurrentMethod().Name;
             try
             {
@@ -112,27 +119,34 @@ namespace NB_Mailer_Plakhtiy
 
                 if (DateTime.Now.Hour > 22)
                 {
-                    // CALL EVENING LOG-UPLOADER FROM ALFA_TEST !!!
-                    alfa.AlfaTest_EveningLogUpload();
-
                     string todayBackUp = @"C:\NBUMAIL\USERD\Admin\ARH\" + DateTime.Now.ToString("Bkp_yyMMdd") + ".RAR";
 
                     // CHECK IF BKP NOT EXISTS & CREATE IT 
+
                     if (!File.Exists(todayBackUp))
                     {
+                        alfa.AlfaTest_EveningLogUpload();                        
+
                         alfa.AlfaTest_TodayBkpCreate(todayBackUp);
+
+                        // TODO: IMLEMENT TWO BACKUPERS !!!!!
+                        // TODO: IMLEMENT TWO BACKUPERS !!!!!
+
+
+
+
+
+                        // TODO: T E M P O R A R Y !!!!!!!!!!!!
+                        // TODO: T E M P O R A R Y !!!!!!!!!!!!
+                        // TODO: T E M P O R A R Y !!!!!!!!!!!!
+
+
+
+
+                        nLogger.Warn("NBU-Mailer 2015 Finished All Tasks For " + DateTime.Now);
                     }
 
-                    // TODO: IMLEMENT TWO BACKUPERS !!!!!
-                    // TODO: IMLEMENT TWO BACKUPERS !!!!!
 
-
-                    // TODO: T E M P O R A R Y !!!!!!!!!!!!
-                    // TODO: T E M P O R A R Y !!!!!!!!!!!!
-                    // TODO: T E M P O R A R Y !!!!!!!!!!!!
-
-
-                    nLogger.Warn("NBU-Mailer 2015 Finished All Tasks For " + DateTime.Now);
                     // Application.Current.Shutdown();
 
                 }
@@ -155,7 +169,7 @@ namespace NB_Mailer_Plakhtiy
 
                         Process.Start(rootDir + "\\CORRSPR3_aaa.bat");
 
-                        nLogger.Warn(rootDir + "\\CORRSPR3_aaa.bat - Started.");
+                        nLogger.Warn(rootDir + "Started Correction For SPRUSNBU.DBF (CORRSPR3_aaa.bat)");
                     }
                     // IF RECEIVE CORR. FOR SPRUSNBU RUN CORRSPR.BAT
                     // WAIT !
@@ -231,7 +245,7 @@ namespace NB_Mailer_Plakhtiy
 
                         File.Copy(outgoimgFiles[0].FullName, dirOutForSent + "\\" + newUniqueName);
 
-                        nLogger.Warn(newUniqueName + " - Sent To - " + dir.Name);
+                        nLogger.Warn(newUniqueName.Substring(0,16) + ".zip - Sent To - " + dir.Name);
 
                         File.Move(outgoimgFiles[0].FullName, dir.FullName + "\\" + "1od_" + DateTime.Now.ToString("MMdd") + ".zip");
                     }
