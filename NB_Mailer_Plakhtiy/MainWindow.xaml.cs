@@ -134,9 +134,11 @@ namespace NB_Mailer_Plakhtiy
 
                     }
                     else
-                    { 
+                    {
 
+                        string todayBackFullUp = "Z:\\" + DateTime.Now.ToString("yyyy-MM") + ".RAR";
 
+                        alfa.AlfaTest_TodayFullBkpCreate(todayBackFullUp);
 
                         // TODO: T E M P O R A R Y !!!!!!!!!!!!
                         // TODO: T E M P O R A R Y !!!!!!!!!!!!
