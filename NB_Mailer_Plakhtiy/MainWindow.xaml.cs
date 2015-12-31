@@ -44,6 +44,8 @@ namespace NB_Mailer_Plakhtiy
             dispchTimer.Start();
         }
 
+
+
         private void DispchTimer_Tick(object sender, EventArgs e)
         {
             string todayTempFile = DateTime.Now.ToString("yyyy-MM-dd") + ".day";
@@ -65,6 +67,8 @@ namespace NB_Mailer_Plakhtiy
             }
 
         }
+
+
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
