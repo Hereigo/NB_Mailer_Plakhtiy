@@ -46,7 +46,24 @@ namespace NB_Mailer_Plakhtiy
 
         private void DispchTimer_Tick(object sender, EventArgs e)
         {
-            StartJob();
+            string todayTempFile = DateTime.Now.ToString("yyyy-MM-dd") + ".day";
+
+            if (DateTime.Now.Day < 4)
+            {
+                if (!File.Exists(todayTempFile))
+                {
+                    File.Create(todayTempFile);
+
+                    nLogger.Warn("Сегодня выходной :) Почта НБУ не работает.");
+                }
+            }
+            else {
+
+                if (!File.Exists(todayTempFile)) File.Create(todayTempFile);
+
+                StartJob();
+            }
+
         }
 
         private void button_Click(object sender, RoutedEventArgs e)
@@ -138,18 +155,18 @@ namespace NB_Mailer_Plakhtiy
 
                         string todayBackFullUp = "Z:\\" + DateTime.Now.ToString("yyyy-MM") + ".RAR";
 
-                        alfa.AlfaTest_TodayFullBkpCreate(todayBackFullUp);
+                        if (!File.Exists(todayBackFullUp))
+                        {
+                            alfa.AlfaTest_TodayFullBkpCreate(todayBackFullUp);
+
+                            nLogger.Warn("NBU-Mailer 2015 Закончил все задачи на сегодня " + DateTime.Now);
+                        }
 
                         // TODO: T E M P O R A R Y !!!!!!!!!!!!
                         // TODO: T E M P O R A R Y !!!!!!!!!!!!
                         // TODO: T E M P O R A R Y !!!!!!!!!!!!
 
-
-
-
-                        nLogger.Warn("NBU-Mailer 2015 Закончил все задачи на сегодня " + DateTime.Now);
                     }
-
 
                     // Application.Current.Shutdown();
 
@@ -250,7 +267,7 @@ namespace NB_Mailer_Plakhtiy
 
                         File.Copy(outgoimgFiles[0].FullName, dirOutForSent + "\\" + newUniqueName);
 
-                        nLogger.Warn(newUniqueName.Substring(0,16) + ".zip - Отправлен в - " + dir.Name);
+                        nLogger.Warn(newUniqueName.Substring(0, 16) + ".zip - Отправлен в - " + dir.Name);
 
                         File.Move(outgoimgFiles[0].FullName, dir.FullName + "\\" + "1od_" + DateTime.Now.ToString("MMdd") + ".zip");
                     }
