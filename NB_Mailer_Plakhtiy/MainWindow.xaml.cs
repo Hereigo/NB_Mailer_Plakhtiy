@@ -50,21 +50,18 @@ namespace NB_Mailer_Plakhtiy
         {
             string todayTempFile = DateTime.Now.ToString("yyyy-MM-dd") + ".day";
 
-            if (DateTime.Now.Day < 4)
+            try
             {
-                if (!File.Exists(todayTempFile))
-                {
-                    File.Create(todayTempFile);
-
-                    nLogger.Warn("Сегодня выходной :) Почта НБУ не работает.");
-                }
-            }
-            else {
-
                 if (!File.Exists(todayTempFile)) File.Create(todayTempFile);
-
-                StartJob();
             }
+            catch (Exception exc)
+            {
+                string message = "Can't create TODAY.day FILE! - " + exc.Message;
+                nLogger.Error(message);
+                MessageBox.Show(message);
+            }
+
+            StartJob();
 
         }
 
@@ -136,6 +133,7 @@ namespace NB_Mailer_Plakhtiy
                 rootDir = GetRootDirFromSettsFile();
 
                 #region  A F T E R  23:00 !!!
+
                 //  A F T E R  23:00 !!!
 
                 if (DateTime.Now.Hour > 22)
@@ -156,20 +154,26 @@ namespace NB_Mailer_Plakhtiy
                     }
                     else
                     {
-
                         string todayBackFullUp = "Z:\\" + DateTime.Now.ToString("yyyy-MM") + ".RAR";
 
-                        if (!File.Exists(todayBackFullUp))
+                        DateTime lastBkpTime = new FileInfo(todayBackFullUp).LastWriteTime;
+
+                        DateTime lastBkpMustBe = DateTime.Now.AddHours(-24);
+
+                        if (DateTime.Compare(lastBkpMustBe, lastBkpTime) < 0)
+                        {
+                            nLogger.Warn("Last Bkp Not Needed Because Its Time is " + lastBkpTime);
+                        }
+                        else
                         {
                             alfa.AlfaTest_TodayFullBkpCreate(todayBackFullUp);
 
                             nLogger.Warn("NBU-Mailer 2015 Закончил все задачи на сегодня " + DateTime.Now);
+
+                            // TODO: T E M P O R A R Y !!!!!!!!!!!!
+                            // TODO: T E M P O R A R Y !!!!!!!!!!!!
+                            // TODO: T E M P O R A R Y !!!!!!!!!!!!
                         }
-
-                        // TODO: T E M P O R A R Y !!!!!!!!!!!!
-                        // TODO: T E M P O R A R Y !!!!!!!!!!!!
-                        // TODO: T E M P O R A R Y !!!!!!!!!!!!
-
                     }
 
                     // Application.Current.Shutdown();
