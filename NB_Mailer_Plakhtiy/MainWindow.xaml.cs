@@ -252,6 +252,8 @@ namespace NB_Mailer_Plakhtiy
             string methodName = MethodInfo.GetCurrentMethod().Name;
             try
             {
+                string doNotRenameFilesFromHere = "_SPISOK";
+
                 string dirOutForBanx = rootPath + "\\ARM3\\EP_O";
 
                 string dirOutForSent = rootPath + "\\SENT\\" +
@@ -265,19 +267,22 @@ namespace NB_Mailer_Plakhtiy
 
                 foreach (DirectoryInfo dir in allSubDirs)
                 {
-                    FileInfo[] outgoimgFiles = dir.GetFiles();
-
-                    if (outgoimgFiles.Length > 0)
+                    if (!dir.Name.Contains(doNotRenameFilesFromHere))
                     {
-                        filesForSend++;
+                        FileInfo[] outgoimgFiles = dir.GetFiles();
 
-                        String newUniqueName = System.IO.Path.GetFileNameWithoutExtension(outgoimgFiles[0].FullName) + "_" + Guid.NewGuid() + ".zip";
+                        if (outgoimgFiles.Length > 0)
+                        {
+                            filesForSend++;
 
-                        File.Copy(outgoimgFiles[0].FullName, dirOutForSent + "\\" + newUniqueName);
+                            String newUniqueName = System.IO.Path.GetFileNameWithoutExtension(outgoimgFiles[0].FullName) + "_" + Guid.NewGuid() + ".zip";
 
-                        nLogger.Warn(newUniqueName.Substring(0, 16) + ".zip - Отправлен в - " + dir.Name);
+                            File.Copy(outgoimgFiles[0].FullName, dirOutForSent + "\\" + newUniqueName);
 
-                        File.Move(outgoimgFiles[0].FullName, dir.FullName + "\\" + "1od_" + DateTime.Now.ToString("MMdd") + ".zip");
+                            nLogger.Warn(newUniqueName.Substring(0, 16) + ".zip - Отправлен в - " + dir.Name);
+
+                            File.Move(outgoimgFiles[0].FullName, dir.FullName + "\\" + "1od_" + DateTime.Now.ToString("MMdd") + ".zip");
+                        } 
                     }
                 }
 
