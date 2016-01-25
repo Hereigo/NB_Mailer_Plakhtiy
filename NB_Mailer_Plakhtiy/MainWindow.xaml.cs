@@ -289,7 +289,9 @@ namespace NB_Mailer_Plakhtiy
                         {
                             filesForSend++;
 
-                            String newUniqueName = System.IO.Path.GetFileNameWithoutExtension(outgoimgFiles[0].FullName) + "_" + Guid.NewGuid() + ".zip";
+                            string currentExten = Path.GetExtension(outgoimgFiles[0].FullName);
+
+                            String newUniqueName = System.IO.Path.GetFileNameWithoutExtension(outgoimgFiles[0].FullName) + "_" + Guid.NewGuid() + currentExten;
 
                             File.Copy(outgoimgFiles[0].FullName, dirOutForSent + "\\" + newUniqueName);
 
@@ -300,9 +302,9 @@ namespace NB_Mailer_Plakhtiy
                             // TODO: MUST BE REFACTORED !!!!!!
                             if (dir.Name.Contains("FILE")) destination = "Несколько Банков.";
 
-                            nLogger.Warn(newUniqueName.Substring(0, 16) + ".zip - Отправлен в - " + dir.Name);
+                            nLogger.Warn(newUniqueName.Substring(0, 16) + currentExten +" - Отправлен в - " + dir.Name);
 
-                            File.Move(outgoimgFiles[0].FullName, dir.FullName + "\\" + "1od_" + DateTime.Now.ToString("MMdd") + ".zip");
+                            File.Move(outgoimgFiles[0].FullName, dir.FullName + "\\" + "1od_" + DateTime.Now.ToString("MMdd") + currentExten);
                         } 
                     }
                 }
